@@ -1,0 +1,216 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="zh-cn"><meta name=author content="Sine"><meta name=description content="TiddlyWiki [TOC] TiddlyWiki 是一个适合管理复杂信息的笔记应用，它有两点特性我非常喜欢： Philosophy of Tiddlers 我认为人们做笔记的目的有两种，一种是借助记笔记的输出过程加深对知识的理"><meta name=keywords content="blog,developer,personal"><meta name=twitter:card content="summary"><meta name=twitter:title content="搭建个人非线性笔记本 TiddlyWiki Server"><meta name=twitter:description content="TiddlyWiki [TOC] TiddlyWiki 是一个适合管理复杂信息的笔记应用，它有两点特性我非常喜欢： Philosophy of Tiddlers 我认为人们做笔记的目的有两种，一种是借助记笔记的输出过程加深对知识的理"><meta property="og:title" content="搭建个人非线性笔记本 TiddlyWiki Server"><meta property="og:description" content="TiddlyWiki [TOC] TiddlyWiki 是一个适合管理复杂信息的笔记应用，它有两点特性我非常喜欢： Philosophy of Tiddlers 我认为人们做笔记的目的有两种，一种是借助记笔记的输出过程加深对知识的理"><meta property="og:type" content="article"><meta property="og:url" content="https://ssine.ink/posts/tiddlywiki-setup/"><meta property="article:published_time" content="2019-08-13T00:00:00+00:00"><meta property="article:modified_time" content="2019-08-13T00:00:00+00:00"><title>搭建个人非线性笔记本 TiddlyWiki Server · Sine's Site</title><link rel=canonical href=https://ssine.ink/posts/tiddlywiki-setup/><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel=stylesheet><link rel=preload href="https://ssine.ink/fonts/forkawesome-webfont.woff2?v=1.1.7" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://ssine.ink/css/coder.min.a050bb9724f6a498b574acf612d6d523bc68756ddc62579923710a8542947c52.css integrity="sha256-oFC7lyT2pJi1dKz2EtbVI7xodW3cYleZI3EKhUKUfFI=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://ssine.ink/css/coder-dark.min.126ad3988d46bdae6217a11105b53c9662bca05f39d42d3c0fb366919d334620.css integrity="sha256-EmrTmI1Gva5iF6ERBbU8lmK8oF851C08D7NmkZ0zRiA=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://ssine.ink/favicon.ico sizes=32x32><link rel=icon type=image/png href=https://ssine.ink/favicon.ico sizes=16x16><link rel=apple-touch-icon href=https://ssine.ink/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://ssine.ink/images/apple-touch-icon.png><meta name=generator content="Hugo 0.74.1"></head><body class=colorscheme-auto><div class=float-container><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://ssine.ink/>Sine's Site</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://ssine.ink/posts/>博客</a></li><li class=navigation-item><a class=navigation-link href=https://kiwi.ssine.cc>维基</a></li><li class=navigation-item><a class=navigation-link href=https://ssine.ink/projects/>项目</a></li><li class="navigation-item menu-separator"><span>|</span></li><li class=navigation-item><a href=https://ssine.ink/en/posts/tiddlywiki-setup/>English</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title>搭建个人非线性笔记本 TiddlyWiki Server</h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i><time datetime=2019-08-13T00:00:00Z>August 13, 2019</time></span>
+<span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>阅读时间：6 分钟</span></div></div></header><div><h1 id=tiddlywiki>TiddlyWiki</h1><p>[TOC]</p><p><a href=https://tiddlywiki.com/>TiddlyWiki</a> 是一个适合管理复杂信息的笔记应用，它有两点特性我非常喜欢：</p><h2 id=philosophy-of-tiddlers>Philosophy of Tiddlers</h2><p>我认为人们做笔记的目的有两种，一种是借助记笔记的输出过程加深对知识的理解，另一种是方便以后重用这些知识。 前者是一时的作用，只是出于这个目的的笔记也无需保存下来，而后者则是很重要的，需要有比较完备的形式将知识组织起来，方便以后的查阅。 TiddlyWiki 就是通过 Tiddler 来记录有意义的小到不可再分的信息，并通过它们之间的联系来表达更深层次的信息，以此达到对任意层次的知识的记录与检索。 正如其官网所言：</p><blockquote><p>The purpose of recording and organising information is so that it can be used again. The value of recorded information is directly proportional to the ease with which it can be re-used.</p><p>The philosophy of tiddlers is that we maximise the possibilities for re-use by slicing information up into the smallest semantically meaningful units with rich modelling of relationships between them. Then we use aggregation and composition to weave the fragments together to present narrative stories.</p><p>TiddlyWiki aspires to provide an algebra for tiddlers, a concise way of expressing and exploring the relationships between items of information.</p></blockquote><h2 id=self-contained>Self-contained</h2><p>TiddlyWiki 是一个完整的应用程序，主要有两种表现形式，一个是独立的单个 html 文件，一个是包含有许多 Tiddler 文件和元信息的目录。 单个 html 文件包括了所有的程序逻辑和数据，目录模式需要 node 程序 <code>tiddlywiki</code> 作为服务端。 程序本身是开源的，它又将所有数据的管理权交给了用户，你只需要一个浏览器就可以访问这些数据。 不像其他的在线服务，就算几十年之后 &mdash; 只要 Web 技术还在，你就能继续使用整个应用。</p><h1 id=服务端部署>服务端部署</h1><p>TiddlyWiki 有很多种使用方式，可以作为单个 html 使用，结合 TiddlyDesktop 做保存，并使用 pages 服务放到公网，或是使用服务端程序管理一个目录。 在实际使用过程中，单个 html 体验并不好，因为保存数据时 html 没有权限覆盖自己，只能通过下载新文件或是用其他应用程序的方式保存，在网络上访问时也会遇到要下载的文件过大的问题。 下面主要介绍通过服务器 serve 一个目录的部署方式。</p><h2 id=nodejs-环境>NodeJS 环境</h2><p>TiddlyWiki 是 js 写的，需要的运行时环境是 node ，在 ubuntu 下安装 node ：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># install package manager</span>
+apt install npm
+<span style=color:#75715e># instal node version manager</span>
+npm install -g n
+<span style=color:#75715e># update nodejs to stable version</span>
+n stable
+<span style=color:#75715e># change the registry</span>
+npm config set registry http://registry.npm.taobao.org/
+</code></pre></div><h2 id=tiddlywiki-服务端>TiddlyWiki 服务端</h2><p>安装好 node 之后使用以下指令安装 TiddlyWiki 服务端程序：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo npm install -g tiddlywiki
+</code></pre></div><h3 id=新建-tiddlywiki-folder>新建 TiddlyWiki Folder</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>tiddlywiki mywiki --init server
+</code></pre></div><p>会在当前目录下新建一个名叫 mywiki 的目录，存放所有 wiki 的数据。 使用</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>tiddlywiki mywiki --listen
+</code></pre></div><p>会启动 TiddlyWiki 的 Server 端，在浏览器就可以访问了。</p><p>关于指令的详细解释参考<a href=https://tiddlywiki.com/#WebServer>官网</a>。 在官方的 <a href=https://github.com/Jermolene/TiddlyWiki5#installing-tiddlywiki-on-nodejs>Github 仓库</a> 也有更详细的解释。</p><h3 id=认证>认证</h3><p>使用服务端并放在公网时会有一个问题，就是任何人都可以修改你的 Wiki 。 我们希望能够通过用户名密码登陆的用户可以修改，但是未登录的用户只能查看，<a href=(https://tiddlywiki.com/#WebServer%20Authorization)>这个功能</a>在 <a href=https://tiddlywiki.com/#Release%205.1.18>5.1.18 版本</a> 新增。 新建文件 users.csv ，包含所有用户的用户名和密码，形如：</p><pre><code class=language-csv data-lang=csv>username,password
+jane,do3
+andy,sm1th
+roger,m00re
+</code></pre><p>在启动服务器时，增加 <code>--listen credentials="/path/to/users.csv" "readers=(anon)" writers=jane,andy,roger</code> 即可实现匿名查看，登录修改的功能。</p><h3 id=nginx-https>Nginx, HTTPS</h3><p>如果希望将 TiddlyWiki 部署在某个子目录（即不由 TiddlyWiki 监听 80 端口），就需要使用 Nginx 做反向代理，将请求转发到 TiddlyWiki 服务端。 下面以我的服务为例，我的主页是 ssine.cc ，希望 TiddlyWiki 运行在 wiki.ssine.cc 域名，就需要由 Nginx 将 wiki.ssine.cc 的请求转发到 TiddlyWiki 所在的端口。</p><p>修改 <code>/etc/nginx/sites-available/wiki.ssine.cc.conf</code> ：</p><pre><code class=language-conf data-lang=conf>server {
+    listen 80;
+    listen [::]:80;
+
+    server_name wiki.ssine.cc;
+    root /var/www/ssine.cc;
+
+    index index.html;
+    location / {
+            try_files $uri $uri/ =404;
+    }
+}
+</code></pre><p>之后重启 Nginx ，激活这个路由：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo ln -s /etc/nginx/sites-available/wiki.ssine.cc.conf /etc/nginx/sites-enabled/wiki.ssine.cc.conf
+sudo nginx -t
+sudo systemctl stop nginx
+sudo systemctl start nginx
+sudo systemctl status nginx
+</code></pre></div><p>获取 HTTPS 证书：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo certbot --rsa-key-size <span style=color:#ae81ff>4096</span> --nginx
+</code></pre></div><p>之后修改 Nginx 设置，启用反向代理：</p><pre><code class=language-conf data-lang=conf>server {
+    server_name wiki.ssine.cc;
+    root /var/www/ssine.cc;
+
+    index index.html;
+
+    location / {
+        proxy_pass http://localhost:1004/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        add_header Strict-Transport-Security &quot;max-age=31536000; includeSubDomains; preload&quot;;
+        client_max_body_size 0;
+
+        access_log /var/log/nginx/wiki.access.log;
+        error_log /var/log/nginx/wiki.error.log;
+    }
+
+    listen [::]:443 ssl http2; # managed by Certbot
+    listen 443 ssl http2; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/nextcloud.dennisnotes.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/nextcloud.dennisnotes.com/privkey.pem; # managed by Certbot
+    ssl_trusted_certificate /etc/letsencrypt/live/nextcloud.dennisnotes.com/chain.pem;
+    include /etc/nginx/snippets/ssl.conf;
+}
+</code></pre><p>之后重复上面的步骤，重启 Nginx ，就可以将 wiki.ssine.cc 的流量转发至本地 1004 端口。</p><p>最后，在 1004 端口启动 TiddlyWiki Server，目录是 tw ：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>tiddlywiki tw --listen host<span style=color:#f92672>=</span>127.0.0.1 port<span style=color:#f92672>=</span><span style=color:#ae81ff>1004</span> credentials<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/path/to/users.csv&#34;</span> writers<span style=color:#f92672>=</span>sine,jill
+</code></pre></div><p>还可以使用 nohup 指令让服务在后台运行：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>nohup tiddlywiki tw --listen host<span style=color:#f92672>=</span>127.0.0.1 port<span style=color:#f92672>=</span><span style=color:#ae81ff>1004</span> credentials<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/path/to/users.csv&#34;</span> writers<span style=color:#f92672>=</span>sine,jill &gt; log.txt 2&gt;&amp;<span style=color:#ae81ff>1</span> &amp;
+</code></pre></div><h1 id=设置>设置</h1><p>下面介绍一些日常使用中对 TiddlyWiki 的调整。</p><h2 id=添加-css>添加 CSS</h2><p>添加自己的 CSS 的方式很简单，创建一个新的 Tiddler ， Type 设为 text/css ，并加上 $:/tags/Stylesheet 的 Tag ，就会生效了。</p><h3 id=故事河居中>故事河居中</h3><p>显示所有 Tiddlers 的一列叫做故事河 Story River ，显示标题的一列叫做侧边栏 Side Bar 。官方有两种布局模式：固定故事河和固定侧边栏，但是固定故事河的话宽屏显示会很偏，固定侧边栏的话故事河又太宽，一口气读不完一行。 因此手动修改 CSS ，让故事河宽度固定并居中，侧边栏在故事河右边：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-css data-lang=css>@<span style=color:#66d9ef>media</span> {
+   {
+    <span style=color:#960050;background-color:#1e0010>$:</span> <span style=color:#960050;background-color:#1e0010>/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint</span>;
+  }
+}
+<span style=color:#f92672>)</span> {
+  <span style=color:#960050;background-color:#1e0010>html</span> <span style=color:#960050;background-color:#1e0010>.tc-page-container</span> <span style=color:#960050;background-color:#1e0010>{</span>
+    <span style=color:#66d9ef>text-align</span>: <span style=color:#66d9ef>center</span>;
+  }
+
+  <span style=color:#f92672>html</span> .<span style=color:#a6e22e>tc-story-river</span> {
+    <span style=color:#66d9ef>position</span>: <span style=color:#66d9ef>relative</span>;
+    <span style=color:#66d9ef>width</span>: <span style=color:#ae81ff>712</span><span style=color:#66d9ef>px</span>;
+    <span style=color:#75715e>/*width:1300px;*/</span>
+    <span style=color:#66d9ef>padding-right</span>: <span style=color:#ae81ff>0</span><span style=color:#66d9ef>px</span>;
+    <span style=color:#66d9ef>padding-left</span>: <span style=color:#ae81ff>0</span><span style=color:#66d9ef>px</span>;
+    <span style=color:#66d9ef>margin</span>: <span style=color:#ae81ff>0</span> <span style=color:#66d9ef>auto</span>;
+    <span style=color:#66d9ef>text-align</span>: <span style=color:#66d9ef>left</span>;
+  }
+
+  <span style=color:#f92672>html</span> .<span style=color:#a6e22e>tc-sidebar-scrollable</span> {
+    <span style=color:#66d9ef>text-align</span>: <span style=color:#66d9ef>left</span>;
+    <span style=color:#66d9ef>left</span>: <span style=color:#ae81ff>50</span><span style=color:#66d9ef>%</span>;
+    <span style=color:#66d9ef>right</span>: <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>margin-left</span>: <span style=color:#ae81ff>350</span><span style=color:#66d9ef>px</span>;
+  }
+
+  <span style=color:#f92672>html</span> .<span style=color:#a6e22e>tc-tiddler-frame</span> {
+    <span style=color:#66d9ef>width</span>: <span style=color:#ae81ff>100</span><span style=color:#66d9ef>%</span>;
+  }
+<span style=color:#960050;background-color:#1e0010>}</span>
+</code></pre></div><h3 id=选中文本背景色>选中文本背景色</h3><p>把选中的文本的背景改成黑色，没别的，就是觉得比较酷 😎。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-css data-lang=css>::<span style=color:#a6e22e>selection</span> {
+  <span style=color:#66d9ef>background</span>: <span style=color:#ae81ff>#333</span>;
+  <span style=color:#66d9ef>color</span>: <span style=color:#ae81ff>#fff</span>;
+}
+
+::<span style=color:#a6e22e>-moz-selection</span> {
+  <span style=color:#66d9ef>background</span>: <span style=color:#ae81ff>#333</span>;
+  <span style=color:#66d9ef>color</span>: <span style=color:#ae81ff>#fff</span>;
+}
+
+::<span style=color:#a6e22e>-webkit-selection</span> {
+  <span style=color:#66d9ef>background</span>: <span style=color:#ae81ff>#333</span>;
+  <span style=color:#66d9ef>color</span>: <span style=color:#ae81ff>#fff</span>;
+}
+</code></pre></div><h3 id=tiddler-内容>Tiddler 内容</h3><p>修改列表的缩进，默认的缩进太多了，看着难受：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-css data-lang=css><span style=color:#f92672>ul</span> {
+  <span style=color:#66d9ef>padding-left</span>: <span style=color:#ae81ff>0</span><span style=color:#66d9ef>px</span>;
+  <span style=color:#66d9ef>margin-left</span>: <span style=color:#ae81ff>25</span><span style=color:#66d9ef>px</span>;
+}
+
+<span style=color:#f92672>ol</span> {
+  <span style=color:#66d9ef>padding-left</span>: <span style=color:#ae81ff>0</span><span style=color:#66d9ef>px</span>;
+  <span style=color:#66d9ef>margin-left</span>: <span style=color:#ae81ff>25</span><span style=color:#66d9ef>px</span>;
+}
+</code></pre></div><p>文本间距微调，标题样式，水平线样式：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-css data-lang=css>.<span style=color:#a6e22e>tc-story-river</span> {
+  <span style=color:#66d9ef>word-spacing</span>: <span style=color:#ae81ff>0.1</span><span style=color:#66d9ef>em</span>;
+}
+
+.<span style=color:#a6e22e>tc-story-river</span> <span style=color:#f92672>h1</span> {
+  <span style=color:#66d9ef>text-align</span>: <span style=color:#66d9ef>center</span>;
+}
+
+.<span style=color:#a6e22e>tc-story-river</span> <span style=color:#f92672>h2</span> {
+  <span style=color:#66d9ef>text-align</span>: <span style=color:#66d9ef>center</span>;
+}
+
+.<span style=color:#a6e22e>tc-story-river</span> <span style=color:#f92672>h3</span> {
+  <span style=color:#66d9ef>text-decoration</span>: <span style=color:#66d9ef>underline</span>;
+}
+
+<span style=color:#f92672>hr</span> {
+  <span style=color:#66d9ef>margin</span>: <span style=color:#ae81ff>0</span> <span style=color:#66d9ef>auto</span>;
+  <span style=color:#66d9ef>border</span>: <span style=color:#ae81ff>0</span>;
+  <span style=color:#66d9ef>height</span>: <span style=color:#ae81ff>1</span><span style=color:#66d9ef>px</span>;
+  <span style=color:#66d9ef>background</span>: <span style=color:#ae81ff>#333</span>;
+  <span style=color:#66d9ef>background-image</span>: linear-gradient(<span style=color:#66d9ef>to</span> <span style=color:#66d9ef>right</span>, <span style=color:#ae81ff>#333</span>, <span style=color:#ae81ff>#a349a4</span>, <span style=color:#ae81ff>#333</span>);
+}
+</code></pre></div><h3 id=新增字体>新增字体</h3><p>很多好看的字体并不 safe ，也就是说客户端上可能没有，为了保证展示效果，使用 font-face 添加字体，在客户端没有字体的时候会去 font-face 声明的地址下载。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-css data-lang=css>@<span style=color:#66d9ef>font-face</span> {
+  <span style=color:#f92672>font-family</span><span style=color:#f92672>:</span> <span style=color:#f92672>Constantia</span><span style=color:#f92672>;</span>
+  <span style=color:#f92672>src</span><span style=color:#f92672>:</span> <span style=color:#f92672>url</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;https://example.com/fonts/constan.ttf&#34;</span><span style=color:#f92672>);</span>
+}
+
+@<span style=color:#66d9ef>font-face</span> {
+  <span style=color:#f92672>font-family</span><span style=color:#f92672>:</span> <span style=color:#f92672>Constantia</span><span style=color:#f92672>;</span>
+  <span style=color:#f92672>src</span><span style=color:#f92672>:</span> <span style=color:#f92672>url</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;https://example.com/fonts/constanb.ttf&#34;</span><span style=color:#f92672>);</span>
+  <span style=color:#f92672>font-weight</span><span style=color:#f92672>:</span> <span style=color:#f92672>bold</span><span style=color:#f92672>;</span>
+}
+
+@<span style=color:#66d9ef>font-face</span> {
+  <span style=color:#f92672>font-family</span><span style=color:#f92672>:</span> <span style=color:#f92672>Constantia</span><span style=color:#f92672>;</span>
+  <span style=color:#f92672>src</span><span style=color:#f92672>:</span> <span style=color:#f92672>url</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;https://example.com/fonts/constani.ttf&#34;</span><span style=color:#f92672>);</span>
+  <span style=color:#f92672>font-style</span><span style=color:#f92672>:</span> <span style=color:#f92672>italic</span><span style=color:#f92672>;</span>
+}
+</code></pre></div><p>这样就可以在设置里使用 Constantia 字体了。</p><h2 id=插件>插件</h2><p>插件的主要作用是处理 Tiddler 文本的渲染，例如将 latex 数学公式渲染出来，或是把文本描述的流程图转换成 svg 。 安装插件的方式异常简单，把它的链接拖到 TiddlyWiki 的界面里然后导入就可以了。</p><h3 id=latex>Latex</h3><p>虽然 Web 端常用的 latex 解析器是 Mathjax ，但是 TiddlyWiki 上比较完善的插件只有 KaTeX ，我为了将只支持单页模式的 Mathjax 插件移植到服务端也花了不少功夫，后来觉得还是用 KaTeX 吧，自己维护一个插件太费心了。</p><h3 id=mermaid>Mermaid</h3><p>想在这边画流程图，已经有的插件叫做 Mermaid.js 但是布局非常丑。 也用了一段时间，后来记形式语言自动机笔记的时候希望能够在节点和边上显示 Tiddler 的链接，做了很多 Ugly Hack 。 现在已经忘了那时的语法了，自己写的代码也有点懒得看。 也是一种取舍，功能很多但是要多记些语法维护些东西，或者功能少表现形式简朴但是人比较轻松。 打算以后搞一个 viz.js 的移植，因为 Graphviz 排版很棒，不过 js 的文件有点大，要慎重考虑。 不过是否使用这种生成工具的主要因素是以后是否需要修改，否则在本地生成图片再上传就好了。</p><h2 id=宏>宏</h2><p>TiddlyWiki 还支持宏定义，可以把一个宏（类似于函数）调用展开成一段文字。 创建宏的方式是新建一个 Tiddler ，把 Type 设置为 application/javascript ，并在最下方 Add a new field 增加 filed: module-type， value: macro 。</p><p>在其它 Tiddler 中调用时使用 <code>&lt;&lt;macro-name param1 param2 ...>></code> 语法。</p><h3 id=嵌入-svg>嵌入 SVG</h3><p>把 svg 嵌入到 html 中式很炫酷的，因为图片里的文字甚至还能被选中，因为经常使用就把这块包装成了宏：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript>(<span style=color:#66d9ef>function</span> () {
+  <span style=color:#75715e>/*jslint node: true, browser: true */</span>
+  <span style=color:#75715e>/*global $tw: false */</span>
+  <span style=color:#e6db74>&#34;use strict&#34;</span>;
+
+  <span style=color:#75715e>/*
+</span><span style=color:#75715e>Information about this macro
+</span><span style=color:#75715e>*/</span>
+
+  <span style=color:#a6e22e>exports</span>.<span style=color:#a6e22e>name</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;svg&#34;</span>;
+
+  <span style=color:#a6e22e>exports</span>.<span style=color:#a6e22e>params</span> <span style=color:#f92672>=</span> [{ <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;src&#34;</span> }, { <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;width&#34;</span> }];
+
+  <span style=color:#75715e>/*
+</span><span style=color:#75715e>Run the macro
+</span><span style=color:#75715e>*/</span>
+  <span style=color:#a6e22e>exports</span>.<span style=color:#a6e22e>run</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>src</span>, <span style=color:#a6e22e>width</span>) {
+    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>width</span>[<span style=color:#a6e22e>width</span>.<span style=color:#a6e22e>length</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;%&#34;</span>)
+      <span style=color:#66d9ef>return</span> (
+        <span style=color:#e6db74>&#39;&lt;center&gt;&lt;embed src=&#34;&#39;</span> <span style=color:#f92672>+</span>
+        <span style=color:#a6e22e>src</span> <span style=color:#f92672>+</span>
+        <span style=color:#e6db74>&#39;&#34; style=&#34;width:&#39;</span> <span style=color:#f92672>+</span>
+        <span style=color:#a6e22e>width</span> <span style=color:#f92672>+</span>
+        <span style=color:#e6db74>&#39;;&#34; type=&#34;image/svg+xml&#34; /&gt;&lt;/center&gt;&#39;</span>
+      );
+    <span style=color:#66d9ef>else</span>
+      <span style=color:#66d9ef>return</span> (
+        <span style=color:#e6db74>&#39;&lt;center&gt;&lt;embed src=&#34;&#39;</span> <span style=color:#f92672>+</span>
+        <span style=color:#a6e22e>src</span> <span style=color:#f92672>+</span>
+        <span style=color:#e6db74>&#39;&#34; style=&#34;width:&#39;</span> <span style=color:#f92672>+</span>
+        <span style=color:#a6e22e>width</span> <span style=color:#f92672>+</span>
+        <span style=color:#e6db74>&#39;px;&#34; type=&#34;image/svg+xml&#34; /&gt;&lt;/center&gt;&#39;</span>
+      );
+  };
+})();
+</code></pre></div><p>参数是 svg 的 url 和宽度，使用时就像下面这样：</p><pre><code class=language-tid data-lang=tid>&lt;&lt;svg &quot;https://example.com/8086general-regs.svg&quot; 450&gt;&gt;
+</code></pre><h3 id=防止图片缓存>防止图片缓存</h3><p>有些外链图片会被缓存很久，如果希望每次打开页面时都会重新请求图片的话可以使用下面的宏：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript>(<span style=color:#66d9ef>function</span> () {
+  <span style=color:#75715e>/*jslint node: true, browser: true */</span>
+  <span style=color:#75715e>/*global $tw: false */</span>
+  <span style=color:#e6db74>&#34;use strict&#34;</span>;
+
+  <span style=color:#75715e>/*
+</span><span style=color:#75715e>Information about this macro
+</span><span style=color:#75715e>*/</span>
+
+  <span style=color:#a6e22e>exports</span>.<span style=color:#a6e22e>name</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;nc-img&#34;</span>;
+
+  <span style=color:#a6e22e>exports</span>.<span style=color:#a6e22e>params</span> <span style=color:#f92672>=</span> [{ <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;url&#34;</span> }];
+
+  <span style=color:#75715e>/*
+</span><span style=color:#75715e>Run the macro
+</span><span style=color:#75715e>*/</span>
+  <span style=color:#a6e22e>exports</span>.<span style=color:#a6e22e>run</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>url</span>) {
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>url</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#34;?&#34;</span> <span style=color:#f92672>+</span> <span style=color:#66d9ef>new</span> Date().<span style=color:#a6e22e>getTime</span>();
+  };
+})();
+</code></pre></div><p>原理是每次在图片地址后增加 <code>?+随机数</code> ，这样浏览器就会认为是另一张图片重新请求。</p><p>使用方式（唯一用到的地方是更新欧拉计划的徽章 XD ）：</p><pre><code class=language-tid data-lang=tid>&lt;img src=&lt;&lt;nc-img url:&quot;https://projecteuler.net/profile/sineLiu.png&quot;&gt;&gt;/&gt;
+</code></pre></div><footer></footer></article><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],processEscapes:true,processEnvironments:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}};</script></section></div><footer class=footer><section class=container><p>© 2016 - 2023 正弦 | <a href=https://beian.miit.gov.cn/ target=_blank>京ICP备19051756号</a></p></section></footer></main><script src=https://ssine.ink/js/dark-mode.min.0213e1773e6d1c5a644f847c67a6f8abac49a3776e2976f6008038af8c5b76a1.js></script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create','UA-127064931-1','auto');ga('send','pageview');}</script></body></html>
