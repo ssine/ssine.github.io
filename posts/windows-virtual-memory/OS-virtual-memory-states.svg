@@ -1,0 +1,66 @@
+<svg width="225" height="400" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>Layer 1</title>
+  <!-- free -->
+  <g stroke="null" id="svg_83" class="node" transform="matrix(1.2755233053898114,0,0,1.2755233053898114,-1090.9152001742227,4.729910584010938) ">
+   <title stroke="null" transform="translate(-4.703951835632324,-7.839919090270996) translate(-1723.8076171875,-1053.43798828125) translate(1765.6380615234375,0) translate(1.1368683772161603e-13,1123.0982666015625) ">free</title>
+   <ellipse stroke="black" fill="none" cx="964.157433" cy="20.450849" rx="27" ry="18" id="svg_85"/>
+   <text stroke="null" text-anchor="middle" x="964.157433" y="24.150849" font-family="Times New Roman,serif" font-size="14" id="svg_84">free</text>
+  </g>
+  <!-- reserved -->
+  <g stroke="null" id="svg_80" class="node" transform="matrix(1.2755233053898114,0,0,1.2755233053898114,-1090.9152001742227,4.729910584010938) ">
+   <title stroke="null" transform="translate(-4.703951835632324,-7.839919090270996) translate(-1723.8076171875,-1053.43798828125) translate(1765.6380615234375,0) translate(1.1368683772161603e-13,1123.0982666015625) ">reserved</title>
+   <ellipse stroke="black" fill="none" cx="902.157733" cy="107.450849" rx="41.6928" ry="18" id="svg_82"/>
+   <text stroke="null" text-anchor="middle" x="902.157733" y="111.150849" font-family="Times New Roman,serif" font-size="14" id="svg_81">reserved</text>
+  </g>
+  <!-- free&#45;&gt;reserved -->
+  <path stroke="black" fill="none" d="m107.227377,40.608913c-18.05516,6.659507 -39.178464,17.923653 -49.970411,36.125371c-5.186788,8.748814 -6.326596,19.421118 -5.654522,29.514334" id="svg_79"/>
+  <polygon stroke="black" fill="black" points="56.03731789675476,105.7293982807787 53.341778411536325,118.97198337885041 47.190866222068735,106.93983751125971 56.03731789675476,105.7293982807787 " id="svg_78"/>
+  <text transform="matrix(1.2755233053898112,0,0,1.2755233053898112,-1084.9152001742227,-1.2700894159890614) " stroke="null" text-anchor="middle" x="911.657733" y="67.650849" font-family="Times New Roman,serif" font-size="14" id="svg_77">保留</text>
+  <!-- committed -->
+  <g stroke="null" id="svg_73" class="node" transform="matrix(1.2755233053898114,0,0,1.2755233053898114,-1090.9152001742227,4.729910584010938) ">
+   <title stroke="null" transform="translate(-4.703951835632324,-7.839919090270996) translate(-1723.8076171875,-1053.43798828125) translate(1765.6380615234375,0) translate(1.1368683772161603e-13,1123.0982666015625) ">committed</title>
+   <ellipse stroke="black" fill="none" cx="964.157433" cy="194.450849" rx="49.2915" ry="18" id="svg_75"/>
+   <text stroke="null" text-anchor="middle" x="964.157433" y="198.150849" font-family="Times New Roman,serif" font-size="14" id="svg_74">committed</text>
+  </g>
+  <!-- free&#45;&gt;committed -->
+  <path stroke="black" fill="none" d="m139.953349,54.992356c0,38.110082 0,117.049675 0,162.763149" id="svg_72"/>
+  <polygon stroke="black" fill="black" points="144.41763154593627,218.03867268863826 139.95330252326562,230.79399117633903 135.488973500595,218.03867268863826 144.41763154593627,218.03867268863826 " id="svg_71"/>
+  <text stroke="null" text-anchor="middle" x="976.491029" y="109.632377" font-family="Times New Roman,serif" font-size="14" id="svg_70" transform="matrix(1.2755233053898112,0,0,1.2755233053898112,-1087.7254295595828,5.793167455557565) ">提交</text>
+  <!-- reserved&#45;&gt;free -->
+  <path stroke="black" fill="none" d="m75.029598,119.641613c11.790937,-16.164707 28.298888,-38.796317 41.576958,-57.000585" id="svg_69"/>
+  <polygon stroke="black" fill="black" points="113.26179009444445,59.65111887357177 124.38556157682456,51.97633625077279 120.47553456938454,64.91265250830475 113.26179009444445,59.65111887357177 " id="svg_68"/>
+  <text transform="matrix(1.2755233053898112,0,0,1.2755233053898112,-1091.9152001742227,11.729910584010936) " stroke="null" text-anchor="middle" x="948.657733" y="67.650849" font-family="Times New Roman,serif" font-size="14" id="svg_67">释放</text>
+  <!-- reserved&#45;&gt;committed -->
+  <g stroke="null" id="svg_62" class="edge" transform="matrix(1.2755233053898114,0,0,1.2755233053898114,-1090.9152001742227,4.729910584010938) ">
+   <title stroke="null" transform="translate(-4.703951835632324,-7.839919090270996) translate(-1723.8076171875,-1053.43798828125) translate(1765.6380615234375,0) translate(1.1368683772161603e-13,1123.0982666015625) ">reserved-&gt;committed</title>
+   <path stroke="black" fill="none" d="m897.088233,125.336849c-2.0643,10.265 -2.7788,23.25 3.0695,33.114c4.5029,7.595 11.2999,13.649 18.8076,18.438" id="svg_65"/>
+   <polygon stroke="black" fill="black" points="920.9901399612427,174.0107889175415 928.0101594924927,181.9458475112915 917.5738801956177,180.120774269104 920.9901399612427,174.0107889175415 " id="svg_64"/>
+   <text stroke="null" text-anchor="middle" x="911.657733" y="154.650849" font-family="Times New Roman,serif" font-size="14" id="svg_63">提交</text>
+  </g>
+  <!-- committed&#45;&gt;free -->
+  <path stroke="black" fill="none" d="m147.63253,229.691106c2.908188,-7.265383 6.158224,-15.405763 9.114886,-22.853548c7.418439,-18.687696 12.831767,-22.33824 16.581799,-42.092266c3.807438,-20.049952 3.807438,-25.868891 0,-45.918843c-3.529375,-18.588197 -11.005208,-38.266976 -18.092017,-54.172746" id="svg_61"/>
+  <polygon stroke="black" fill="black" points="151.05468029879376,66.24681340228778 149.7191196044316,52.798916164571466 159.1492943186762,62.47894878058386 151.05468029879376,66.24681340228778 " id="svg_60"/>
+  <text stroke="null" text-anchor="middle" x="1005.657444" y="123.69464" font-family="Times New Roman,serif" font-size="14" id="svg_59" transform="matrix(1.2755233053898112,0,0,1.2755233053898112,-1087.7254295595828,6.856424327104179) ">释放</text>
+  <!-- committed&#45;&gt;reserved -->
+  <path stroke="black" fill="none" d="m123.419508,230.2703c-11.579966,-15.875163 -27.605896,-37.846052 -40.674652,-55.763328" id="svg_58"/>
+  <polygon stroke="black" fill="black" points="78.96590809513032,176.90241537471366 75.0558810876903,163.96609911718173 86.17934116301353,171.6394804082243 78.96590809513032,176.90241537471366 " id="svg_57"/>
+  <text transform="matrix(1.2755233053898112,0,0,1.2755233053898112,-1092.9152001742227,-1.2700894159890614) " stroke="null" text-anchor="middle" x="948.657733" y="154.650849" font-family="Times New Roman,serif" font-size="14" id="svg_56">回收</text>
+  <!-- locked -->
+  <g stroke="null" id="svg_52" class="node" transform="matrix(1.2755233053898114,0,0,1.2755233053898114,-1090.9152001742227,4.729910584010938) ">
+   <title stroke="null" transform="translate(-4.703951835632324,-7.839919090270996) translate(-1723.8076171875,-1053.43798828125) translate(1765.6380615234375,0) translate(1.1368683772161603e-13,1123.0982666015625) ">locked</title>
+   <ellipse stroke="black" fill="none" cx="964.157433" cy="281.450849" rx="35.194" ry="18" id="svg_54"/>
+   <text stroke="null" text-anchor="middle" x="964.157433" y="285.150849" font-family="Times New Roman,serif" font-size="14" id="svg_53">locked</text>
+  </g>
+  <!-- committed&#45;&gt;locked -->
+  <path stroke="black" fill="none" d="m126.76369,275.634818c-3.372991,7.114868 -6.577233,15.213047 -8.281591,23.040415c-2.201165,10.10967 -0.405228,20.898303 2.874643,30.671877" id="svg_51"/>
+  <polygon stroke="black" fill="black" points="125.61750565118697,327.97193122326195 126.31189337857646,341.4682328017415 117.35286398216803,331.3506791334306 125.61750565118697,327.97193122326195 " id="svg_50"/>
+  <text stroke="null" text-anchor="middle" x="956.50972" y="241.650769" font-family="Times New Roman,serif" font-size="14" id="svg_49" transform="matrix(1.2755233053898112,0,0,1.2755233053898112,-1116.4333650913418,4.7299105840109235) ">锁</text>
+  <!-- locked&#45;&gt;committed -->
+  <path stroke="black" fill="none" d="m138.890092,340.54378c0,-14.835102 0,-34.750361 0,-51.733316" id="svg_48"/>
+  <polygon stroke="black" fill="black" points="134.42571662904837,288.72760292108256 138.890045651719,275.97215464128317 143.35437467438965,288.727473128984 134.42571662904837,288.72760292108256 " id="svg_47"/>
+  <text stroke="null" text-anchor="middle" x="975.657444" y="242.434761" font-family="Times New Roman,serif" font-size="14" id="svg_46" transform="matrix(1.2755233053898112,0,0,1.2755233053898112,-1084.5356589449427,5.793167455557565) ">解锁</text>
+ </g>
+</svg>
