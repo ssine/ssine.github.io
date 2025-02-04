@@ -1,0 +1,43 @@
+<head>
+  <style> body { margin: 0; } </style>
+
+  <script src="//unpkg.com/d3"></script>
+
+  <script src="//unpkg.com/globe.gl"></script>
+</head>
+
+<body>
+  <div id="globeViz"></div>
+
+  <script>
+    const weightColor = d3.scaleLinear()
+      .domain([10, 300])
+      .range(['#1ac1e5', '#FF204E'])
+      .clamp(true);
+
+    const myGlobe = Globe()
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .pointOfView({ lat: 38.00042, lng: 114.51594, altitude: 2.5 }, 1000)
+      .hexLabel(p => `${(p.points.reduce((acc, cur) => acc + cur.size, 0) / 3600 / 24).toFixed(2)} days stayed`)
+      .hexAltitude(({sumWeight}) => {
+          return Math.max(0, (Math.log(sumWeight) / Math.log(2) - 1)) * 0.01
+      })
+      .hexTopColor((d) => weightColor(d.sumWeight))
+      .hexSideColor((d) => weightColor(d.sumWeight))
+      .hexBinResolution(5)
+      .hexMargin(0)
+      .hexBinMerge(false)
+      (document.getElementById('globeViz'));
+
+      fetch('heatmap_data.json')
+          .then(res => res.json())
+          .then(data => {
+              myGlobe
+              .hexBinPointsData(data.map(d => ({
+              lat: d.Latitude,
+              lng: d.Longitude,
+              size: d.Duration
+              })))
+          });
+  </script>
+</body>

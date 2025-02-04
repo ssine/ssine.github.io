@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/projects/rm-watermark/static/css/main.e6c13ad2.css",
+    "main.js": "/projects/rm-watermark/static/js/main.6f689aff.js",
+    "index.html": "/projects/rm-watermark/index.html",
+    "main.e6c13ad2.css.map": "/projects/rm-watermark/static/css/main.e6c13ad2.css.map",
+    "main.6f689aff.js.map": "/projects/rm-watermark/static/js/main.6f689aff.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.6f689aff.js"
+  ]
+}
