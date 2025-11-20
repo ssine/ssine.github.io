@@ -1,0 +1,180 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="en"><meta name=author content="Sine"><meta name=description content="Note: This article is automatically translated, please turn to the Chinese version for more accurate expression if possible. Overview I want to do a database management system DBMS in the elementary school next semester, because I think it is very interesting, so I plan to write it in advance. some thoughts First, I want to try the development model of Typescript + Electron. Javascript is almost my favorite programming language"><meta name=keywords content="blog,developer,personal"><meta name=twitter:card content="summary"><meta name=twitter:title content="DBMS Implementation"><meta name=twitter:description content="Note: This article is automatically translated, please turn to the Chinese version for more accurate expression if possible. Overview I want to do a database management system DBMS in the elementary school next semester, because I think it is very interesting, so I plan to write it in advance. some thoughts First, I want to try the development model of Typescript + Electron. Javascript is almost my favorite programming language"><meta property="og:title" content="DBMS Implementation"><meta property="og:description" content="Note: This article is automatically translated, please turn to the Chinese version for more accurate expression if possible. Overview I want to do a database management system DBMS in the elementary school next semester, because I think it is very interesting, so I plan to write it in advance. some thoughts First, I want to try the development model of Typescript + Electron. Javascript is almost my favorite programming language"><meta property="og:type" content="article"><meta property="og:url" content="https://ssine.ink/en/posts/dbms-implementation/"><meta property="article:published_time" content="2019-01-24T00:00:00+00:00"><meta property="article:modified_time" content="2019-01-24T00:00:00+00:00"><title>DBMS Implementation · Sine's Site</title><link rel=canonical href=https://ssine.ink/en/posts/dbms-implementation/><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel=stylesheet><link rel=preload href="https://ssine.ink/fonts/forkawesome-webfont.woff2?v=1.1.7" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://ssine.ink/css/coder.min.a050bb9724f6a498b574acf612d6d523bc68756ddc62579923710a8542947c52.css integrity="sha256-oFC7lyT2pJi1dKz2EtbVI7xodW3cYleZI3EKhUKUfFI=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://ssine.ink/css/coder-dark.min.126ad3988d46bdae6217a11105b53c9662bca05f39d42d3c0fb366919d334620.css integrity="sha256-EmrTmI1Gva5iF6ERBbU8lmK8oF851C08D7NmkZ0zRiA=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://ssine.ink/favicon.ico sizes=32x32><link rel=icon type=image/png href=https://ssine.ink/favicon.ico sizes=16x16><link rel=apple-touch-icon href=https://ssine.ink/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://ssine.ink/images/apple-touch-icon.png><meta name=generator content="Hugo 0.74.1"></head><body class=colorscheme-auto><div class=float-container><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://ssine.ink/en>Sine's Site</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://ssine.ink/en/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=https://kiwi.ssine.cc>Wiki</a></li><li class=navigation-item><a class=navigation-link href=https://ssine.ink/en/gallery>Gallery</a></li><li class=navigation-item><a class=navigation-link href=https://ssine.ink/en/projects/>Projects</a></li><li class="navigation-item menu-separator"><span>|</span></li><li class=navigation-item><a href=https://ssine.ink/posts/dbms-implementation/>中文</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title>DBMS Implementation</h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i><time datetime=2019-01-24T00:00:00Z>January 24, 2019</time></span>
+<span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>7-minute read</span></div></div></header><div><p><strong>Note: This article is automatically translated, please turn to the Chinese version for more accurate expression if possible.</strong></p><h1 id=overview>Overview</h1><p>I want to do a database management system DBMS in the elementary school next semester, because I think it is very interesting, so I plan to write it in advance.</p><h2 id=some-thoughts>some thoughts</h2><p>First, I want to try the development model of Typescript + Electron. Javascript is almost my favorite programming language at the moment. The syntax is similar to C/C++. It is comfortable to write, and it does not have the uncomfortable indentation of Python; it is also a true cross-platform language, which can be run wherever a browser exists. And with the help of Electron, you can easily implement a cross-platform client, and it is much easier to package up than Python / C++; object-oriented and functional have certain support, especially Typescript brings static type checking to it; the language comes with The single thread/event mechanism makes it inherently asynchronous, which is very convenient to use as a user interface; new technologies also make JS run more efficiently. However, choosing to use JS here also has certain shortcomings. The ecology of JS is mainly in the front end, and some packages may be missing when it is used for this kind of low-level system. In the end, JS was chosen because it was only a course design and would not have high performance and reliability requirements.</p><p>Secondly, there are some things about visualization. I especially hope that the working process of the DBMS can be displayed intuitively, especially the SQL parsing piece, which can draw abstract syntax trees and the like, and can also draw table structure, meta-information, etc., I feel a little excited to think of this, which is a big motivation that drove me to do it.</p><p>Maybe after the project is completed, it can be more than just a course design. If the logic and visualization are done well, it can be used by teachers for teaching. It can intuitively display SQL analysis, generated relational algebra, optimized content, and there are many things that can be made dynamic Shows, such as multi-granular locks, log-based recovery, of course these are for later.</p><p>Finally, completing this project is a gradual process (for example, it supports a small number of expressions first, and then finds that it needs to be added later), but the structure of the article will be messy if it is written in this way, so all articles will be updated at any time during the project.</p><h2 id=design-and-evaluation>Design and evaluation</h2><p>The DBMS is still a fairly large system. The teacher said that when the time comes, we will only allow us to implement a small part of the functions, but I have to do it in advance and plan by myself which parts to implement. In this way, you must list all the modules/functions, divide the dependencies, evaluate the implementation scheme and difficulty, and finally decide the part to be implemented.</p><p>The following is a diagram of the structure of a database system:</p><p><img src=dbms-structure.svg alt=dbms></p><h3 id=data-structure>data structure</h3><p>Tables in relational databases are stored in two-dimensional arrays. A database contains many tables, and an instance of dbms can contain many databases. At each level here, there will be some metadata that needs to be stored. The initial idea is that metadata is also stored in a table structure, which makes it more convenient to provide users with an editing interface.</p><h3 id=file-system>File system</h3><p>The more uncomfortable point is that what I want to implement is a toy model, and there will be no need for a large amount of data, at most, the amount of data at the MB level. At this time, the file system is only used as a persistence solution, not centered on it. . For such a small amount of data can be put into memory completely, file management and buffer management are meaningless. So the implementation of the buffer mechanism is really thankless, so first implement a memory-based database management system, and data access is implemented directly through serialization and deserialization.</p><p>Another point is that the reason why the index will be implemented by the b+ tree is that the b+ tree is more compatible with disk operations and requires less reading and writing. Since all the content is in the memory, replacing the b+ tree with other balanced search trees may be the opposite. Faster.</p><h3 id=sql-analysis-and-execution>SQL analysis and execution</h3><p>The interface provided by the DBMS to the user is SQL (DDL + DML), which is also the most complicated part for a small DBMS.<a href=https://stackoverflow.com/questions/40448716/stuck-parsing-sql-select-statement-at-the-join-clause-bnf-grammar-included>SQL grammar belongs to LALR(1) grammar</a>，<a href=https://github.com/ronsavage/SQL>Here</a>There are several BNF statements and HTML versions of standard SQL to look at. They are huge. To generate a parser from a grammar, a parser generator is needed. Lex and Yacc can only be used in C/C++. After checking it, I found that there is a ported version of JS called Jison (Bison in Javascript), which can be used without any problems. The complete SQL is too big, and its grammar-guided definition is not something I can complete on my own, so I have to implement a subset of it. Fortunately, I found a copy in an unfinished project<a href=https://github.com/agershun/WebSQLShim/blob/master/src/sqliteparser.jison>Can be used for the grammar-directed definition of jison</a>, What to do is to streamline or refactor based on it.</p><h2 id=reference>reference</h2><p>In the structural design of the system, reference is made to the redbase database, which contains four main modules: file system, system management, language execution, and index. A physical plan is generated when SQL is executed, and there is no logical plan. Minidb has no file system part. The index has not been implemented yet, and other structures are similar to redbase.</p><p>The division of the physical plan mainly refers to<a href="https://docs.microsoft.com/en-us/sql/relational-databases/showplan-logical-and-physical-operators-reference?view=sql-server-2017">SQL Server documentation</a>。</p><h2 id=next-step>Next step</h2><p>So far, it has realized the functions of SQL parsing, semantic checking, and execution. It can perform addition, deletion, and modification operations, and it can create, delete, switch databases, and persist data. However, it only implements the operations on the main process. If there are violations, there will still be loopholes. The next step is to visualize the physical plan, adding type checking, data integrity constraints, and then indexing.</p><p>Current results:</p><p><img src=dbms_cur_fig2.png alt=cur></p><h1 id=project-structure>Project structure</h1><p>Project structure and development environment construction. There is not much content on the Typescript + Electron project built on the Internet, so it is necessary to describe it separately.</p><p>The project adopts the Client-Server structure. The Client provides a user interface and sends user input to the Server through IPC. The Server is responsible for all the remaining work and returns the result to the Client as a string. The Client side implements a rudimentary terminal, using the xterm library.</p><p>After the server receives the input, it first determines whether the first character is<code>.</code> Judge the system command, if it is a system command, call the code in the manager module to modify/query system information. If it is a SQL statement, the SQL will be parsed by the parser generated by Jison to get the parse tree. After calling the semantic check function in the query module according to the statement type, it will check the legitimacy of the parse tree and complete the omitted column names in the statement. After the semantic check is over, the query module is responsible for converting SQL statements into execution plans, and all execution plans are in the plan module. Finally, it executes according to the execution plan and converts the output into a string, and returns it to the Client.</p><h2 id=environment-setup>Environment setup</h2><h3 id=typescript--electron>Typescript + Electron</h3><p>With this technology stack, it is more difficult to search for hand-held blogs, and you need to have a certain understanding of the working methods of Electron, Typescript and NPM. Applications can be packaged and released (no production environment), so only the development environment is considered below. The way to use electron on the command line is<code>electron [filename]</code> , The file is the entry file of electron. NPM configuration file<code>config.json</code> inside <code>scripts</code> The script is run in NPM&rsquo;s own environment,<code>node_modules</code> The dependencies under the folder will be added to the environment. Typescript is equivalent to adding a compilation step before all normal behaviors. Just specify the directory where the ts file is located and the output directory in the settings.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>npm init
+npm i typescript -S
+npm i electron --save-exact
+</code></pre></div><p>The version of electron changes quickly, so it is better to store a specific version. TSLint is not needed because it is solo.</p><p>Create<code>tsconfig.json</code> , Which makes the compiler<code>tsc</code> Read the input from the src folder and set the output to the js folder.</p><p>In this way, the running script of NPM is<code>tsc && electron ./js/main.js</code></p><h3 id=terminal>Terminal</h3><p>Find a better command-line terminal hterm, influenced by<a href=https://tbodt.com/hterm-xterm.html>This article</a>recommended.</p><p>The main interface of the DBMS is the command line, and xterm is used here.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>npm i xterm -S
+</code></pre></div><p>Simple use is as follows:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Terminal</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;xterm&#34;</span>;
+
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>term</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Terminal</span>();
+<span style=color:#a6e22e>term</span>.<span style=color:#a6e22e>open</span>(document.<span style=color:#a6e22e>getElementById</span>(<span style=color:#e6db74>&#34;terminal&#34;</span>));
+
+<span style=color:#a6e22e>term</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;key&#34;</span>, (<span style=color:#a6e22e>key</span>, <span style=color:#a6e22e>ev</span>) =&gt; {
+  <span style=color:#a6e22e>term</span>.<span style=color:#a6e22e>write</span>(<span style=color:#a6e22e>key</span>);
+});
+</code></pre></div><p>A useful command line is encapsulated in the back, so I won&rsquo;t repeat it.</p><h3 id=parser>Parser</h3><p>Parser generator used Jison:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>npm i jison -S
+</code></pre></div><p>The instructions for using Jison to generate a parser are:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>jison ./ts/parser/sql.y -o ./ts/parser/parser.js
+</code></pre></div><p>Since ts is used to compile, this js file will not be placed in the output folder (changing the suffix will cause the compilation to fail), so you have to copy it manually:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>copy .<span style=color:#ae81ff>\\</span>ts<span style=color:#ae81ff>\\</span>parser<span style=color:#ae81ff>\\</span>parser.js .<span style=color:#ae81ff>\\</span>js<span style=color:#ae81ff>\\</span>parser<span style=color:#ae81ff>\\</span>parser.js /Y
+</code></pre></div><p>This is the command under windows.</p><h3 id=webpack>Webpack</h3><p>The project is developed using npm, but it is unavoidable to package when it is released, and Webpack will be used. But let&rsquo;s talk about these boring things when the project is finished.</p><h1 id=sql-parsing-and-execution>SQL parsing and execution</h1><p>Determine the supported SQL subset, and implement the input parsing.</p><h2 id=parser-1>Parser</h2><p>It is not difficult to write SQL Parser directly by hand. The first word can determine the type of sentence, and the sentence template can be directly applied later, but it is still a little troublesome to parse the expression part. For convenience and clarity, Jison (Yac implemented by js) is used to generate SQL Parser for js.</p><p>Mentioned in the first article<a href=https://github.com/agershun/WebSQLShim/blob/master/src/sqliteparser.jison>Syntax-guided definition for jison</a>, This definition is more than 1,500 lines, it is very troublesome to read, so I wrote a python script to draw a tree diagram of the SQL grammar through Graphviz (due to the recursive definition in the grammar, it is not a tree. Called a dependency graph better).</p><p><img src=sql_graph_all.svg alt=sql_all></p><p>The above is a vector diagram, you can zoom in as much as you like when you open a new tab page. It&rsquo;s still tiring to look at the whole picture directly, but thanks to Graphviz&rsquo;s powerful layout, we can see at a glance what sub-statements are and split them out. The following is the process of checking these statements in turn and condensing them.</p><p>So far, the creation and deletion of tables and the addition, deletion, and modification of data query statements have been implemented:</p><pre><code class=language-yacc data-lang=yacc>sql_stmt
+    : create_table_stmt
+    | drop_table_stmt
+    | insert_stmt
+    | select_stmt
+    | delete_stmt
+    | update_stmt
+    ;
+</code></pre><p>In addition to SQL statements, there are also some system commands for database creation, deletion, system management and other operations:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>.exit                        | 退出
+.file [filename]             | 将文件内容作为输入
+.createdb [database name]    | 创建数据库
+.dropdb [database name]      | 删除数据库
+.usedb [database name]       | 使用数据库
+.showdb                      | 显示所有数据库
+.showtb                      | 显示当前数据库所有表
+</code></pre></div><p>In order to distinguish it from SQL, all system commands are<code>.</code> begin.</p><h3 id=create-table-statement>CREATE TABLE statement</h3><p>First implement a most basic CREATE TABLE statement, and save the integrity constraints.</p><pre><code class=language-yacc data-lang=yacc>create_table_stmt
+    : CREATE TABLE database_table_name LPAR column_defs RPAR
+    ;
+
+database_table_name
+    : name DOT name
+    | name
+    ;
+
+name
+    : LITERAL
+    ;
+
+column_defs
+    : column_defs COMMA column_def
+    | column_def
+    ;
+
+column_def
+    : name type_name
+    ;
+
+type_name
+    : names
+    ;
+</code></pre><p>The semantic actions can be seen in the code repository, first try the effect of parsing:</p><p><img src=dbms_im_fig1.png alt=1></p><p>There seems to be no problem.</p><h3 id=minidb-data-type>MiniDB data type</h3><p>What data types are supported? The maximum length of the string and the precision of the number specified in the standard SQL statement are to facilitate the allocation of storage space. Doing those with js is purely to increase the complexity.</p><p>It&rsquo;s the easiest to use the js original sound data type directly, so let&rsquo;s do it first.</p><p>There are three data types: Number, String, Date.</p><p>Although Number is divided into int and float, it is troublesome for js to perform type checking (not the basic data type of js), so it is not supported at first. String is inherently unlimited in length, Date belongs to the object of js, you need to write it when you use it<code>Date('yyyy/mm/dd')</code> 。</p><h3 id=insert-statement>INSERT statement</h3><p>Simply insert a set of data into the table, and there is no type check yet.</p><pre><code class=language-yacc data-lang=yacc>insert_stmt
+    : INSERT INTO database_table_name columns_par insert_values
+    ;
+
+columns_par
+    :
+    | LPAR columns RPAR
+    ;
+
+columns
+    : columns COMMA name
+    | name
+    ;
+
+insert_values
+    : VALUES LPAR subvalues RPAR
+    ;
+
+subvalues
+    : subvalues COMMA expr
+    | expr
+    ;
+
+expr
+    : literal_value
+    | NULL
+    ;
+
+literal_value
+    : NUMBER
+    | STRING
+    ;
+</code></pre><h3 id=expression>expression</h3><p>There are three basic units of expression: literal, NULL and name. The name can be column name or table name. column name or database name. table name. column name. Hereafter the names represent these three.</p><p>There are two types of expressions according to the return value type: data type and Boolean type.</p><p>Data type expressions connected by comparison operators are called Boolean operators, and Boolean operators are connected by logical connectors or boolean.</p><pre><code class=language-yacc data-lang=yacc>expr
+    : literal_value
+    | name
+    | name DOT name
+    | name DOT name DOT name
+
+    | expr EQ expr
+    | expr NE expr
+    | expr GT expr
+    | expr GE expr
+    | expr LT expr
+    | expr LE expr
+
+    | expr AND expr
+    | expr OR expr
+    ;
+</code></pre><p>The interpretation of expressions uses function recursion. For numeric types, evaluate directly, while Boolean types recursively calculate the values of the left and right subtrees and then evaluate them.</p><h3 id=select-statement>SELECT statement</h3><p>The SELECT statement is the most complex part of the entire SQL. A typical SELECT statement looks like this:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#66d9ef>SELECT</span> result_columns
+<span style=color:#66d9ef>FROM</span> table1
+(<span style=color:#66d9ef>INNER</span>) <span style=color:#66d9ef>JOIN</span> table2 <span style=color:#66d9ef>ON</span> join_condition
+<span style=color:#66d9ef>WHERE</span> expression
+</code></pre></div><p>When creating an execution plan, first perform the table join operation in the FROM clause, then put the large table in the expression of the WHERE clause to filter, and finally use the column that exists in result_columns to get out. No optimization has been considered yet.</p><pre><code class=language-yacc data-lang=yacc>select
+    : SELECT result_columns from where
+    ;
+
+result_columns
+    : column_list
+    | STAR
+    ;
+
+column_list
+    : column_list COMMA name
+    | name
+    ;
+
+alias
+    :
+    | name
+    | AS name
+    ;
+
+from
+    : FROM join_clause
+    ;
+
+join_clause
+    : table_or_subquery
+    | join_clause join_operator table_or_subquery join_constraint
+    ;
+
+table_or_subquery
+    : database_table_name alias
+    ;
+
+join_operator
+    : COMMA
+    | join_type JOIN
+    ;
+
+join_type
+    :
+    | INNER
+    | CROSS
+    ;
+
+join_constraint
+    :
+    | ON expr
+    ;
+
+where
+    : WHERE expr
+    |
+    ;
+</code></pre><h3 id=delete-given-update>DELETE given UPDATE</h3><p>The DELETE and UPDATE statements have a relatively simple structure, and the limited statement where has been defined in the previous statement.</p><pre><code class=language-yacc data-lang=yacc>delete_stmt
+    : DELETE FROM database_table_name where
+    ;
+
+update_stmt
+    : UPDATE database_table_name SET column_expr_list where
+    ;
+
+column_expr_list
+    : column_expr_list COMMA column_expr
+    | column_expr
+    ;
+
+column_expr
+    : name EQ expr
+    ;
+</code></pre><h2 id=implementation-plan>Implementation plan</h2><p>The output of SQL Parser is a syntax tree, and then the program converts the syntax tree into an execution plan and executes it to obtain the table entry output. The execution plan is a good first-level interface. Each plan represents an operation. It mainly provides the get_next() interface to get the next entry. The execution plan provides the program with better modularity and room for optimization. For example, when scanning a table, if an index is not established, only a circular scan plan can be used, and an index scan plan can be used to improve efficiency if there is an index; When the table is connected, it can be realized in three ways: double loop, hash, and merge. The program can choose a better execution plan according to the actual situation.</p><p>There are two kinds of plans, logical plan and physical plan. Logical plan is almost a relational algebraic expression, mainly used for optimization, and then converted into physical plan for actual execution. The physical plan mainly refers to<a href="https://docs.microsoft.com/en-us/sql/relational-databases/showplan-logical-and-physical-operators-reference?view=sql-server-2017">SQL Server</a> , Selected some physical plans to be implemented:</p><ul><li><p>compute_scalar</p></li><li><p>table_filter</p></li><li><p>hash_join</p></li><li><p>merge_join</p></li><li><p>nested_loop_join</p></li><li><p>aggregate</p></li><li><p>table_project</p></li><li><p>table_insert</p></li><li><p>index_insert</p></li><li><p>clustered_index_insert</p></li><li><p>table_delete</p></li><li><p>index_delete</p></li><li><p>clustered_index_delete</p></li><li><p>table_update</p></li><li><p>index_update</p></li><li><p>clustered_index_update</p></li><li><p>table_scan</p></li><li><p>index_scan</p></li><li><p>clustered_index_scan</p></li></ul><p>At present, the most basic physical plans without indexes have been implemented, which are enough to support some current SQL statements. When the indexes are implemented in the future, they can be expanded.</p><h1 id=endurance>Endurance</h1><p>Persistence refers to saving the data in the memory to the disk so that the previous state can be restored when the program is started next time.</p><h2 id=method-to-realize>Method to realize</h2><p>Persistence must rely on the file system provided by the operating system, that is, save data in files. Open the single file of SQLite and look at it, except that the data in the table is all garbled, indicating that it is saved in its own prescribed format, that is, at the binary level. Although NodeJS also provides an interface to do this, there is no need to design a sophisticated storage format, because after all, it is just for fun. The easiest way is to directly serialize the database object and save it in a file in the form of a string. Just parse the file in JSON format when reading it.</p><h2 id=object-persistence>Object persistence</h2><p>After serializing an object, the methods held by the object will be lost, and will not be the original object when it is restored. In order to solve this problem, I had to manually write a method to read data from json for each object. Storing objects and data together will cause inconvenience to persistence. If the two are separated, there is no problem. Objects only store data, and other operations are performed by independent functions. This may be the direction to be reconstructed later.</p></div><footer></footer></article><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],processEscapes:true,processEnvironments:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}};</script></section></div><footer class=footer><section class=container><p>© 2016 - 2023 Sine Liu</p></section></footer></main><script src=https://ssine.ink/js/dark-mode.min.0213e1773e6d1c5a644f847c67a6f8abac49a3776e2976f6008038af8c5b76a1.js></script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create','UA-127064931-1','auto');ga('send','pageview');}</script></body></html>

@@ -1,0 +1,117 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="zh-cn"><meta name=author content="Sine"><meta name=description content="前言 利用开源解决方案自建聊天服务器，端到端加密，没有恼人的 EULA，自己控制数据，可以和其他的服务器组成联邦，甚至还能通过桥接与其它聊天软件"><meta name=keywords content="blog,developer,personal"><meta name=twitter:card content="summary"><meta name=twitter:title content="自建聊天服务器、机器人与多平台桥接"><meta name=twitter:description content="前言 利用开源解决方案自建聊天服务器，端到端加密，没有恼人的 EULA，自己控制数据，可以和其他的服务器组成联邦，甚至还能通过桥接与其它聊天软件"><meta property="og:title" content="自建聊天服务器、机器人与多平台桥接"><meta property="og:description" content="前言 利用开源解决方案自建聊天服务器，端到端加密，没有恼人的 EULA，自己控制数据，可以和其他的服务器组成联邦，甚至还能通过桥接与其它聊天软件"><meta property="og:type" content="article"><meta property="og:url" content="https://ssine.ink/posts/matrix-bot-and-bridges/"><meta property="article:published_time" content="2021-03-27T00:36:39+08:00"><meta property="article:modified_time" content="2021-03-27T00:36:39+08:00"><title>自建聊天服务器、机器人与多平台桥接 · Sine's Site</title><link rel=canonical href=https://ssine.ink/posts/matrix-bot-and-bridges/><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel=stylesheet><link rel=preload href="https://ssine.ink/fonts/forkawesome-webfont.woff2?v=1.1.7" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://ssine.ink/css/coder.min.a050bb9724f6a498b574acf612d6d523bc68756ddc62579923710a8542947c52.css integrity="sha256-oFC7lyT2pJi1dKz2EtbVI7xodW3cYleZI3EKhUKUfFI=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://ssine.ink/css/coder-dark.min.126ad3988d46bdae6217a11105b53c9662bca05f39d42d3c0fb366919d334620.css integrity="sha256-EmrTmI1Gva5iF6ERBbU8lmK8oF851C08D7NmkZ0zRiA=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://ssine.ink/favicon.ico sizes=32x32><link rel=icon type=image/png href=https://ssine.ink/favicon.ico sizes=16x16><link rel=apple-touch-icon href=https://ssine.ink/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://ssine.ink/images/apple-touch-icon.png><meta name=generator content="Hugo 0.74.1"></head><body class=colorscheme-auto><div class=float-container><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://ssine.ink/>Sine's Site</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://ssine.ink/posts/>博客</a></li><li class=navigation-item><a class=navigation-link href=https://kiwi.ssine.cc>维基</a></li><li class=navigation-item><a class=navigation-link href=https://ssine.ink/gallery>画廊</a></li><li class=navigation-item><a class=navigation-link href=https://ssine.ink/projects/>项目</a></li><li class="navigation-item menu-separator"><span>|</span></li><li class=navigation-item><a href=https://ssine.ink/en/posts/matrix-bot-and-bridges/>English</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title>自建聊天服务器、机器人与多平台桥接</h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i><time datetime=2021-03-27T00:36:39+08:00>March 27, 2021</time></span>
+<span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>阅读时间：8 分钟</span></div></div></header><div><h1 id=前言>前言</h1><p>利用开源解决方案自建聊天服务器，端到端加密，没有恼人的 EULA，自己控制数据，可以和其他的服务器组成联邦，甚至还能通过桥接与其它聊天软件的个人和群组聊天——看起来十分的完美。 当然，整个系统需要一点时间来搭建，我一开始只是想做一个稳定的聊天机器人，后来才发现自建聊天服务器带来的的更多便利。</p><p><img src=result.png alt=img></p><p>本文是在 Docker 的层面上手动搭建的，对于细节控制或是扩展性要求不高的同学可以直接参考 <a href=https://github.com/spantaleev/matrix-docker-ansible-deploy>Ansible Playbook</a> 一键部署。</p><h1 id=matrix-与-synapse>Matrix 与 Synapse</h1><p>首先解释一下这两个关键概念：</p><ul><li><a href=https://matrix.org/>Matrix</a> 是一个及时聊天的协议，定义了 Matrix 服务器与服务器 ( federation ) 、服务器与客户端之间的信息传递方式。</li><li><a href=https://github.com/matrix-org/synapse>Synapse</a> 是对 Matrix 协议中服务器端的官方实现。</li></ul><center><img src=matrix-architecture.png width=500px></center><p>如上图 ( <a href=https://arxiv.org/pdf/1910.06295.pdf>来源</a> ) 所示，每个 Homeserver 有自己的域名 ( xxx.com ) ，每个 Matrix 用户属于一个 Homeserver，因此有一个唯一的 ID <code>@user:xxx.com</code> ，不同的 Homeserver 之间可以互相沟通信息，使得所有用户之间可以互相交流。 Matrix 没有区分私聊和群聊，所有聊天都是在聊天室 Room 中进行的，私聊就是只有两个人的聊天室。 Room 也是属于某个 Server <code>#room:xxx.com</code> 的，不过 Homeserver 负责维护所有所属 User 所在的 Room，也要从别的 Homeserver 同步 Room 的信息过来。</p><p>对于个人来说，搭建一个 Homeserver ( 对应一个 Synapse 实例 ) 就足以满足日常的聊天等需求了。</p><p>整个目录结构如下：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>.
+├── admin.sh
+├── bridge-discord.sh
+├── bridge-telegram.sh
+├── bridge-wechat.sh
+├── bridge-whatsapp.sh
+├── data
+│   ├── bridges
+│   │   ├── discord
+│   │   │   ├── config.yaml
+│   │   │   ├── database.db
+│   │   │   └── discord-registration.yaml
+│   │   ├── telegram
+│   │   │   ├── config.yaml
+│   │   │   ├── mautrix-telegram.db
+│   │   │   └── registration.yaml
+│   │   ├── wechat
+│   │   │   ├── config.yaml
+│   │   │   ├── package-lock.json
+│   │   │   ├── room-store.db
+│   │   │   ├── user-store.db
+│   │   │   └── wechaty-registration.yaml
+│   │   └── whatsapp
+│   │       ├── config.yaml
+│   │       ├── mautrix-whatsapp.db
+│   │       └── registration.yaml
+│   ├── homeserver.db
+│   ├── homeserver.yaml
+│   ├── &lt;domain&gt;.log.config
+│   ├── &lt;domain&gt;.signing.key
+│   ├── media_store
+│   └── synapse.log
+├── gen.sh
+└── run.sh
+</code></pre></div><p>上面的 sh 文件都是 docker 的启动命令，data 文件夹包含了所有容器的数据，mount 在 synapse 容器里，data/bridges/xxx 是对应的桥接容器 mount 数据的地方。</p><p>首先要给 Homeserver 准备一个域名，假设是 <code>matrix.qq.com</code> ，并且 data 目录路径为 <code>/home/user/data</code> 。 那么首先生成配置文件：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run -it --rm <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  -v /home/user/data:/data <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  -e SYNAPSE_SERVER_NAME<span style=color:#f92672>=</span>matrix.qq.com <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  -e SYNAPSE_REPORT_STATS<span style=color:#f92672>=</span>yes <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  matrixdotorg/synapse:latest generate
+</code></pre></div><p>之后会生成一个 <code>homeserver.yaml</code> 配置文件，需要修改的地方 ( 行数不固定，请自行搜索 ) ：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>server_name</span>: <span style=color:#e6db74>&#34;matrix.qq.com&#34;</span>
+<span style=color:#66d9ef>enable_registration</span>: <span style=color:#66d9ef>true</span>
+</code></pre></div><p>为了让桥接用的容器和 synapse 容器能够互相通讯，建立一个 docker network：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker network create matrix
+</code></pre></div><p>之后启动服务器并连接到 network ( 注意端口映射 ) ：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run -d --name synapse <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  -v /home/user/data:/data <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  -p 80:8008 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  --restart unless-stopped <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  --network matrix <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  matrixdotorg/synapse:latest
+</code></pre></div><p>，如果一切正常的话，直接访问 matrix.qq.com 就能看到 Synapse 成功启动的页面，可以在 Web 客户端 <a href=https://app.element.io/>https://app.element.io/</a> 上注册一个账号了。Element 的其它客户端也比较好用。</p><h1 id=聊天机器人>聊天机器人</h1><p>Matrix 自带 Bot API，用 SDK 可以更方便的开发。这里用了比较熟悉的 Typescript，详细信息参考 <a href=https://matrix.org/docs/guides/usage-of-matrix-bot-sdk>官方教程</a> ，简单来说就是先通过 Web 端给 bot 注册一个账号，获取 token，然后调 SDK 就好。 小 Tip：可以用 ts-node 来直接运行 typescript 文件，体验更佳。</p><p>跟 qq 微信不同，这里的一切都是设计好的，不需要 Hack，因此很轻松就可以跑起来。 重点反而是用 bot 来做什么，因此也聊一聊我曾经用聊天机器人做了什么，作为 use case 的一些参考，这部分为了更好的阅读体验放在附录了。</p><h1 id=多平台桥接>多平台桥接</h1><p>自建 Matrix 服务器的另一个精彩用例是桥接其它聊天软件，这样平时不需要开很多软件就能维持 connection，要是对 GFW 外有接触的话，聊天软件还是蛮多的，比如 Discord、Telegram、Whatsapp 等。比较完整的列表可以在 <a href=https://matrix.org/bridges/>官网</a> 看到，不再赘述。下面用最简单的语言介绍下各个 bridge 的搭建流程。</p><h2 id=discord>Discord</h2><p>Discord 有两种 bridge 方式，一个是创建一个 bot 账号，再把 bot 拉到需要同步的 server，这样说话也是通过 bot 来说的；另一个是直接使用用户的 token，以用户的身份进行操作，这样体验更好，不需要拉 bot，不过风险大一些。 下面采用第二种方案， <a href=https://github.com/matrix-discord/mx-puppet-discord>官方文档</a> 。</p><p>首先把 <a href=https://github.com/matrix-discord/mx-puppet-discord/blob/master/sample.config.yaml>样例配置</a> 拷贝到本地，然后编辑里面必要的信息：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>bridge</span>:
+  <span style=color:#66d9ef>port</span>: <span style=color:#ae81ff>8434</span>  <span style=color:#75715e># Synapse 访问 bridge 用的端口，任取</span>
+  <span style=color:#66d9ef>bindAddress</span>: matrixdiscord  <span style=color:#75715e># 跟容器名对应，这样在同个 network 下可以访问到</span>
+  <span style=color:#66d9ef>domain</span>: matrix.qq.com
+  <span style=color:#66d9ef>homeserverUrl</span>: https://matrix.qq.com
+
+<span style=color:#75715e># 权限看情况开，如果是个人服务器可以放的松一些</span>
+<span style=color:#66d9ef>provisioning</span>:
+  <span style=color:#66d9ef>whitelist</span>:
+    -   <span style=color:#e6db74>&#34;.*&#34;</span>
+<span style=color:#66d9ef>relay</span>:
+  <span style=color:#66d9ef>whitelist</span>:
+    -   <span style=color:#e6db74>&#34;.*&#34;</span>
+<span style=color:#66d9ef>selfService</span>:
+  <span style=color:#66d9ef>whitelist</span>:
+    -   <span style=color:#e6db74>&#34;.*&#34;</span>
+</code></pre></div><p>把文件放在 <code>/home/user/data/bridges/discord/config.yaml</code> ，然后运行以下命令生成 Synapse 使用的配置文件：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run -it --rm -v /home/user/data/bridges/discord:/data: z sorunome/mx-puppet-discord -r config.yaml
+</code></pre></div><p>之后会在同目录下生成一个 <code>discord-registration.yaml</code> 文件，然后修改 <code>/home/user/data/homeserver.yaml</code>：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>app_service_config_files</span>:
+  - /data/bridges/discord/discord-registration.yaml
+</code></pre></div><p>然后启动 discord bridge 容器：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run -d <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  --restart unless-stopped <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  -v /home/user/data/bridges/discord:/data: z <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  --network<span style=color:#f92672>=</span>matrix <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  --name<span style=color:#f92672>=</span>matrixdiscord <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  sorunome/mx-puppet-discord
+</code></pre></div><p>再重启 Synapse 来激活相关配置：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker restart synapse
+</code></pre></div><p>这样就设置完成了，找 bot 账号 <code>@_discordpuppet_bot:matrix.qq.com</code> 跟它私聊 help 应该能看到回应。</p><p>接下来参考 <a href=https://github.com/Tyrrrz/DiscordChatExporter/wiki/Obtaining-Token-and-Channel-IDs>这里</a> 获取 discord 的 user token，跟 bot 私聊 <code>link user &lt;token></code> 可以为账户建立 bridge，使用 <code>list</code> 查看所有 userid，<code>listguilds &lt;userid></code> 查看用户所有的 server，<code>bridgeguild &lt;userid> &lt;guildId></code> 来 bridge 对应的 server。</p><h2 id=telegram>Telegram</h2><p>Telegram 桥接通过 <a href=https://github.com/tulir/mautrix-telegram>mautrix-telegram</a> ，相关文档在 <a href="https://docs.mau.fi/bridges/python/setup/docker.html?bridge=telegram">这里</a> 。</p><p>首先生成样例配置文件：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run --rm -v /home/user/data/bridges/telegram:/data: z dock.mau.dev/tulir/mautrix-telegram:latest
+</code></pre></div><p>然后修改 <code>registration.yaml</code> 相关配置：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>homeserver</span>:
+    <span style=color:#66d9ef>address</span>: https://matrix.qq.com
+    <span style=color:#66d9ef>domain</span>: matrix.qq.com
+<span style=color:#66d9ef>appservice</span>:
+    <span style=color:#66d9ef>address</span>: http://matrixtelegram:<span style=color:#ae81ff>29317</span>  <span style=color:#75715e># 与容器名 match</span>
+    <span style=color:#66d9ef>database</span>: sqlite:////data/mautrix-telegram.db
+    <span style=color:#66d9ef>public</span>:  <span style=color:#75715e># 可选修改</span>
+        <span style=color:#66d9ef>enabled</span>: <span style=color:#66d9ef>true</span>
+        <span style=color:#66d9ef>prefix</span>: /telegram-bridge
+        <span style=color:#66d9ef>external</span>: https://matrix.qq.com/telegram-bridge
+<span style=color:#66d9ef>bridge</span>:
+    <span style=color:#66d9ef>max_initial_member_sync</span>: <span style=color:#ae81ff>20</span>  <span style=color:#75715e># 每个群初始化时同步多少用户，太大可能导致服务器僵尸用户爆炸多</span>
+    <span style=color:#66d9ef>sync_channel_members</span>: <span style=color:#66d9ef>false</span>
+    <span style=color:#66d9ef>permissions</span>:
+        <span style=color:#66d9ef>&#39;*&#39;</span>: relaybot
+        <span style=color:#66d9ef>matrix.qq.com</span>: full
+        <span style=color:#66d9ef>&#39;@admin_user: matrix.qq.com&#39;</span>: admin
+<span style=color:#66d9ef>logging</span>:
+    <span style=color:#66d9ef>handlers</span>:
+        <span style=color:#66d9ef>file</span>:
+            <span style=color:#66d9ef>filename</span>: /data/mautrix-telegram.log
+</code></pre></div><p>再在 homeserver.yaml 中引入 telegram 的配置：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>app_service_config_files</span>:
+  - /data/bridges/discord/discord-registration.yaml  <span style=color:#75715e># 上一节的配置文件</span>
+  - /data/bridges/telegram/registration.yaml
+</code></pre></div><p>最后启动桥接容器并重启服务器：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run -d --restart unless-stopped --network<span style=color:#f92672>=</span>matrix -v /home/user/data/bridges/telegram:/data: z --name<span style=color:#f92672>=</span>matrixtelegram dock.mau.dev/tulir/mautrix-telegram:latest
+docker restart synapse
+</code></pre></div><p>与账号 <code>@telegrambot:matrix.qq.com</code> 私聊，输入 <code>login</code>，之后按照提示输入手机号以及验证码，就可以登录了。 登录之后会自动同步所有的聊天。 需要注意的是如果之后登陆了 telegram 网页版的话就会导致 bot 被强制下线，而且目前没有很好的恢复办法，所以以后尽量不要登录网页版了。</p><h2 id=whatsapp>Whatsapp</h2><p>Whatsapp 跟 Telegram 的 bridge 都是 mautrix 提供的，在同个网站可以找到文档。不过 Whatsapp 的风控也比较严格，有点像微信。 用法和上文类似，先生成 <code>config.yaml</code>，配置同样可以参考上文，至少要修改 address, domain 和 appservice.address：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>homeserver</span>:
+    <span style=color:#66d9ef>address</span>: https://matrix.qq.com
+    <span style=color:#66d9ef>domain</span>: matrix.qq.com
+<span style=color:#66d9ef>appservice</span>:
+    <span style=color:#66d9ef>address</span>: http://matrixwhatsapp:<span style=color:#ae81ff>29318</span>  <span style=color:#75715e># 与容器名 match</span>
+</code></pre></div><p><code>homeserver.yaml</code> 新增：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>app_service_config_files</span>:
+  - /data/bridges/discord/discord-registration.yaml  <span style=color:#75715e># 上一节的配置文件</span>
+  - /data/bridges/telegram/registration.yaml
+  - /data/bridges/whatsapp/registration.yaml
+</code></pre></div><p>之后启动 bridge 并重启服务器：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run -d --restart unless-stopped --network<span style=color:#f92672>=</span>matrix -v /home/user/data/bridges/whatsapp:/data: z --name<span style=color:#f92672>=</span>matrixwhatsapp dock.mau.dev/tulir/mautrix-whatsapp:latest
+docker restart synapse
+</code></pre></div><p>然后找 bot<code>@whatsappbot:matrix.qq.com</code> 私聊 login 即可，这里是作为网页版扫码登录，不过 Whatsapp 要求 app 在线的时候网页版才能用，所以比较鸡肋。 想要彻底摆脱手机 APP 的话可以启动一个安卓虚拟机运行 Whatsapp ，不过这要求虚拟机支持摄像头模拟来扫码， Win 和 Linux 下都没有很方便的选择，还不如找一个不用的旧手机常年开机。</p><h2 id=微信>微信</h2><p>微信的桥接可以跟随 <a href=https://github.com/wechaty/matrix-appservice-wechaty>项目文档</a> ，不过项目还处于初期开发阶段，我试了一下发现虽然能正常同步消息，但是用户的名字都是 wxid，不能正常显示用户名和昵称，处于几乎不可用的状态，因此先不写详细教程了。</p><h1 id=附录>附录</h1><h2 id=我构建聊天机器人的经历>我构建聊天机器人的经历</h2><p>第一次接触到 Chatbot 是在 2018 年大二的时候，参加了微软学生俱乐部的暑期活动，有一个项目是给 Windows 下面的语音助手 Cortana 开发新功能，我提出了一个快捷键小抄表的 proposal，大意就是在工作中想知道某个软件完成某个操作的快捷键是什么的时候，可以直接询问 Cortana，不用再打断工作流去互联网查询。</p><p><img src=cortana.png alt=cortana></p><p>这个项目主要通过微软的自然语言理解服务 LUIS 来识别用户问题中的软件和操作，之后去预先积累的操作数据中查询并返回，Cortana 侧的交互是通过平台上的开发语言 SCL ( Semantic Composition Language ) 来实现的。 这是我第一次开发聊天机器人，SCL 比较简洁的设计也给了我很多启发。</p><p>后来再搞 Chatbot 就是单纯给自己用了，19 年的时候看到一篇关于人生日历的文章，就基于前端写了一个可以记录每天干的事情以及打分的网页，存储是把 xml 文件放在阿里云的 OSS 服务上实现的，但是每天去 OSS 服务上修改 xml 文件就很麻烦，于是就搞了一个 QQ 机器人，每天定时询问当天做了什么，然后把内容追加到 OSS 文件里。 后来到了考完试出分的时候，我觉得经常去教务刷网站看有没有处分很麻烦，就写了一个脚本定期抓取，每当有新课程的成绩出现就发 qq 消息通知。</p><center><img src=qqbot-2019.png height=400px></center>
+<details><summary>NSFW</summary><p>也是 19 年的时候，网上公开了一个 <a href=https://github.com/EBazarov/nsfw_data_source_urls>NSFW 数据集</a> ，就一时兴起想做一个色图机器人，QQ 微信自然不太合适，于是搞了一个 Telegram 的 bot，每次发送指令，都会从 NSFW 数据集里面随机挑一张图片发出来，可惜感觉图片质量不高。 顺带一提，Telegram 官方提供了 Bot API，比 QQ 微信友好多了。</p></details><p>后来申请到了国外的学校，大家自发组织了一个刷题打卡微信群，我觉得群里之前的手动打卡方式非常原始，就搞了一个微信的打卡机器人：</p><center><img src=wechat-bot.jpg height=400px></center><p>微信的机器人框架基本都挂掉了，比较靠谱的 Wechaty 并不是免费的，一个 Token 对应一个 session, 200/月，还好成为 contributer 的话可以免费获取，于是我贡献了一个 <a href=https://github.com/wechaty/wechaty-plugin-contrib/issues/13>Message Awaiter 插件</a> ，成功拿到了免费 Token，不过需要每隔几个月就续期，加上微信对账号的风控很严格，还是挺不爽的。</p><p>时间来到 2020 年 8 月，QQ 机器人的框架开始大量被腾讯查封，也包括我使用的酷 Q，这导致我只能另寻出路。 好在这之前的一段时间就接触到了微信的机器人框架 Wechaty，开始用微信的一个小号来做日常的机器人，在迁移的过程中也修改了代码结构，使得逻辑代码可以兼容不同的底层聊天软件。</p><center><img src=qqbot-baned.jpg height=400px></center><p>20 年底的时候，搬到了北京租房工作，开始搞一些身体健康检测和日常记录，需要有个触发事件时提醒的方式，就又开始搞 QQ Bot，发现虽然之前的酷 Q 跑路了，但是还有一个基于 Android QQ 的机器人框架，叫做 Mirai，试了下还是稳定好用的，而且都是基于 HTTP 的 API，没什么学习成本。 于是 QQ Bot 又复活了，负责每天出发事件的时候发消息提醒。</p><p>尽管如此，我还是想有个不依赖恶心人的腾讯的聊天机器人，考察了很多聊天软件之后，发现没有符合需求的服务 ( GFW 内外皆可用，不受审查，数据安全，开放 Bot API ) 。 只好采用自建 Matrix 聊天服务器的方式，虽然需要额外付出运维成本，但是前面的需求都能满足。 搭建好之后就把大部分个人相关的聊天机器人的工作迁移了过来，总算能一劳永逸的喘口气了。</p><p>最近 <a href=https://wechaty.js.org/2021/02/14/ziki-wechaty-helper/>受人启发</a> ，搞了一个在特定 room 跟 bot 说话，自动把内容同步到 wiki 的对应条目上的功能，感觉方便了很多，可以作为平时想要记点什么的 inbox。</p><h2 id=tips>Tips</h2><p>如果长时间积累下来的图片视频占用空间很大，可以参考官方的 <a href=https://github.com/matrix-org/synapse/blob/develop/docs/admin_api/media_admin_api.md#delete-local-media-by-date-or-size>Admin API</a> 来按照时间和大小筛选媒体文件并删除，需要加 admin 权限用户的 header ，找 header 的方式跟建立 bot 时一样。</p></div><footer></footer></article><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],processEscapes:true,processEnvironments:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}};</script></section></div><footer class=footer><section class=container><p>© 2016 - 2023 正弦 | <a href=https://beian.miit.gov.cn/ target=_blank>京ICP备19051756号</a></p></section></footer></main><script src=https://ssine.ink/js/dark-mode.min.0213e1773e6d1c5a644f847c67a6f8abac49a3776e2976f6008038af8c5b76a1.js></script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create','UA-127064931-1','auto');ga('send','pageview');}</script></body></html>
